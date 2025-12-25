@@ -1,0 +1,83 @@
+.editor-page {
+  padding: 32rpx;
+  background: #f7f8fa;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.preview-card,
+.editor-block {
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 12rpx 28rpx rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.preview-image {
+  width: 100%;
+  height: 320rpx;
+  border-radius: 24rpx;
+  margin-top: 16rpx;
+  object-fit: cover;
+  background: #f0f0f0;
+}
+
+.preview-placeholder {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 28rpx;
+  color: #999;
+}
+
+.preview-location {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #7a5c2f;
+}
+
+.editor-textarea {
+  margin-top: 16rpx;
+  width: 100%;
+  min-height: 200rpx;
+  border-radius: 20rpx;
+  padding: 16rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+  background: #f6f7fb;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12rpx;
+}
+
+.switch-label {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.switch-hint {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.submit-btn {
+  width: 100%;
+  border: none;
+  border-radius: 999rpx;
+  padding: 20rpx 0;
+  font-size: 30rpx;
+  background: #1296db;
+  color: #fff;
+}

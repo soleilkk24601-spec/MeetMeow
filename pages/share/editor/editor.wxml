@@ -1,0 +1,32 @@
+<view class="editor-page">
+  <view class="preview-card">
+    <text class="section-title">预览 · {{catLabel}}</text>
+    <image class="preview-image" src="{{mediaUrl}}" mode="aspectFill" wx:if="{{mediaUrl}}"></image>
+    <text class="preview-placeholder" wx:if="{{!mediaUrl}}">暂无图片</text>
+    <text class="preview-location" wx:if="{{locationDisplay}}">📍 {{locationDisplay}}</text>
+  </view>
+
+  <view class="editor-block">
+    <text class="section-title">分享文案</text>
+    <textarea
+      class="editor-textarea"
+      placeholder="写下你与猫咪的初遇故事"
+      value="{{content}}"
+      bindinput="onContentInput"
+      maxlength="500"
+      auto-height="true"
+    ></textarea>
+  </view>
+
+  <view class="editor-block" wx:if="{{canToggleLocation}}">
+    <view class="switch-row">
+      <text class="switch-label">向大家展示位置</text>
+      <switch checked="{{shareLocation}}" bindchange="toggleLocation"></switch>
+    </view>
+    <text class="switch-hint">组织账号默认可查看精确坐标，普通用户仅看到模糊地点</text>
+  </view>
+
+  <button class="submit-btn" bindtap="submitShare" loading="{{submitting}}" disabled="{{submitting}}">发布到内容广场</button>
+</view>
+
+<floating-ball />

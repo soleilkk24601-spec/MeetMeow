@@ -1,0 +1,72 @@
+<view class="chat-page">
+  <view class="chat-header">
+    <view class="header-texts">
+      <text class="title">智能问答助手</text>
+      <text class="subtitle">解答关于猫咪的一切</text>
+    </view>
+    <view class="header-actions">
+      <button class="history-btn" size="mini" bindtap="handleHistoryTap">历史</button>
+      <button class="clear-btn" size="mini" bindtap="handleClearCache">清除缓存</button>
+    </view>
+  </view>
+
+  <scroll-view
+    class="message-list"
+    scroll-y="true"
+    scroll-with-animation="true"
+    scroll-into-view="{{scrollIntoView}}"
+  >
+    <block wx:for="{{messages}}" wx:key="{{item.id}}">
+      <block wx:if="{{item.status === 'failed'}}">
+        <view id="{{item.id}}" class="retry-row">
+          <text class="retry-text">助手忙碌，请稍后重试</text>
+          <text class="retry-action" data-id="{{item.id}}" bindtap="retryMessage">点击重试</text>
+        </view>
+      </block>
+      <block wx:else>
+        <view id="{{item.id}}" class="message-row message-row--{{item.role}}">
+          <image
+            class="avatar"
+            src="{{item.role === 'assistant' ? assistantAvatar : userAvatar}}"
+            mode="aspectFill"
+          ></image>
+          <view class="bubble">
+            <text class="bubble-text">{{item.content}}</text>
+          </view>
+        </view>
+      </block>
+    </block>
+
+    <view class="message-row message-row--assistant" wx:if="{{isWaitingResponse}}">
+      <image class="avatar" src="{{assistantAvatar}}" mode="aspectFill"></image>
+      <view class="bubble bubble--streaming">
+        <text class="bubble-text" wx:if="{{streamingMessage}}">{{streamingMessage}}</text>
+        <view class="typing-dots" wx:if="{{!streamingMessage}}">
+          <text>.</text>
+          <text>.</text>
+          <text>.</text>
+        </view>
+      </view>
+    </view>
+    <view id="streaming-anchor"></view>
+  </scroll-view>
+
+  <view class="input-bar">
+    <textarea
+      class="input-area"
+      placeholder="向喵助手提问"
+      value="{{inputValue}}"
+      bindinput="handleInput"
+      auto-height="true"
+      maxlength="500"
+     ></textarea>
+    <view class="input-actions">
+      <button
+        class="send-btn"
+        bindtap="sendMessage"
+        loading="{{isSending}}"
+        disabled="{{isSending || !canSend}}"
+       style="height: 58rpx; display: block; box-sizing: border-box; left: 0rpx; top: 0rpx">{{isSending ? '发送中' : '发送'}}</button>
+    </view>
+  </view>
+</view>

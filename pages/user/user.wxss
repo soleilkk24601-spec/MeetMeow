@@ -1,0 +1,242 @@
+.user-page {
+  min-height: 100vh;
+  background: #f6f6f6;
+  padding: 32rpx 24rpx 80rpx;
+  box-sizing: border-box;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 32rpx;
+  padding: 32rpx;
+  box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.06);
+  margin-bottom: 32rpx;
+}
+
+.profile-main {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  background: #eee;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.tag-row {
+  margin-top: 12rpx;
+  display: flex;
+  gap: 12rpx;
+}
+
+.role-tag,
+.status-tag {
+  font-size: 24rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  background: #f4f4f4;
+  color: #555;
+}
+
+.status-pending {
+  background: #fff6e5;
+  color: #b77600;
+}
+
+.status-verified {
+  background: #e6f7ed;
+  color: #089a58;
+}
+
+.status-rejected {
+  background: #ffecec;
+  color: #c0392b;
+}
+
+.profile-btn {
+  margin-top: 24rpx;
+  width: 100%;
+  background: linear-gradient(90deg, #74c0ff, #4d7dff);
+  color: #fff;
+  border: none;
+  border-radius: 999rpx;
+}
+
+.section {
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 16rpx;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.item-text {
+  flex: 1;
+}
+
+.item-title {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.item-desc {
+  font-size: 24rpx;
+  color: #888;
+  margin-top: 8rpx;
+}
+
+.chevron {
+  font-size: 40rpx;
+  color: #ccc;
+}
+
+.meta-line {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8rpx;
+}
+
+.meta-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.meta-value {
+  font-size: 26rpx;
+  color: #333;
+}
+
+.dev-section {
+  border: 1px dashed #e0e0e0;
+}
+
+.debug-input-row {
+  margin-top: 20rpx;
+  display: flex;
+  gap: 16rpx;
+}
+
+.debug-input {
+  flex: 1;
+  padding: 18rpx 20rpx;
+  border-radius: 20rpx;
+  border: 1px solid #dcdcdc;
+  font-size: 26rpx;
+}
+
+.switch-btn {
+  padding: 0 24rpx;
+  border-radius: 20rpx;
+  background: #4d7dff;
+  color: #fff;
+}
+
+.link-btn {
+  margin-top: 16rpx;
+  padding: 0;
+  background: none;
+  color: #4d7dff;
+  border: none;
+  text-align: left;
+}
+
+.debug-hint {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.verify-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.verify-modal {
+  width: 86%;
+  background: #fff;
+  border-radius: 32rpx;
+  padding: 32rpx;
+  box-shadow: 0 30rpx 60rpx rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.modal-close {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: #f4f4f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: #555;
+}
+
+.form-field {
+  margin-bottom: 24rpx;
+}
+
+.field-label {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.field-input {
+  width: 100%;
+  padding: 18rpx 20rpx;
+  border-radius: 20rpx;
+  border: 1px solid #e5e5e5;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.submit-btn {
+  width: 100%;
+  background: linear-gradient(90deg, #ffb347, #ffcc33);
+  color: #333;
+  border-radius: 999rpx;
+  border: none;
+}

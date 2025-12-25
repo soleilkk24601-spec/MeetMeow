@@ -1,0 +1,90 @@
+<view class="user-page">
+  <view class="profile-card">
+    <view class="profile-main">
+      <image class="avatar" src="{{userInfo.avatar_url || defaultAvatar}}" mode="aspectFill"></image>
+      <view class="profile-info">
+        <text class="nickname">{{userInfo.nickname || '未登录喵友'}}</text>
+        <view class="tag-row">
+          <text class="role-tag">{{roleLabels[userInfo.role] || '普通用户'}}</text>
+          <text class="status-tag status-{{userInfo.verify_status}}">{{verifyStatusLabels[userInfo.verify_status] || '未认证'}}</text>
+        </view>
+      </view>
+    </view>
+    <button class="profile-btn" size="mini" bindtap="handleGetProfile">同步微信资料</button>
+  </view>
+
+  <view class="section">
+    <view class="section-title">定位设置</view>
+    <view class="list-item">
+      <view class="item-text">
+        <text class="item-title">LBS 分享</text>
+        <text class="item-desc">开启后记录拍摄坐标，仅认证账号可见</text>
+      </view>
+      <switch checked="{{userInfo.is_lbs_enabled}}" bindchange="toggleLbs"></switch>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">账号与认证</view>
+    <view class="list-item" bindtap="openVerifyModal">
+      <view class="item-text">
+        <text class="item-title">动保组织认证</text>
+        <text class="item-desc">{{verifyStatusLabels[userInfo.verify_status] || '未认证'}}</text>
+      </view>
+      <text class="chevron">›</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="meta-line">
+      <text class="meta-label">账号 ID</text>
+      <text class="meta-value">{{userInfo._id || '待初始化'}}</text>
+    </view>
+    <view class="meta-line">
+      <text class="meta-label">创建时间</text>
+      <text class="meta-value">{{userInfo.created_at || '--'}}</text>
+    </view>
+  </view>
+
+  <view class="section dev-section">
+    <view class="section-title">调试账号切换</view>
+    <view class="meta-line">
+      <text class="meta-label">当前实际 openid</text>
+      <text class="meta-value">{{currentOpenId || '加载中'}}</text>
+    </view>
+    <view class="meta-line">
+      <text class="meta-label">覆盖 openid</text>
+      <text class="meta-value">{{debugOverrideOpenId || '未设置（使用登录返回）'}}</text>
+    </view>
+    <view class="debug-input-row">
+      <input class="debug-input" placeholder="输入 users 表中的 _id" value="{{debugInputOpenId}}" bindinput="onDebugOpenIdInput" />
+      <button class="switch-btn" size="mini" bindtap="applyDebugOpenId">切换</button>
+    </view>
+    <button class="link-btn" bindtap="clearDebugOpenId" wx:if="{{debugOverrideOpenId}}">恢复真实 openid</button>
+    <text class="debug-hint">提示：用于在微信开发者工具内测试不同 role/权限，可直接填写 users 表的 _id。</text>
+  </view>
+
+  <view class="verify-overlay" wx:if="{{showVerifyModal}}" bindtap="closeVerifyModal">
+    <view class="verify-modal" catchtap="stopModalTap">
+      <view class="modal-header">
+        <text>动保组织认证</text>
+        <view class="modal-close" bindtap="closeVerifyModal">✕</view>
+      </view>
+      <view class="form-field">
+        <text class="field-label">机构名称</text>
+        <input class="field-input" placeholder="如：城市TNR行动组" data-field="orgName" value="{{verifyForm.orgName}}" bindinput="onVerifyInput" />
+      </view>
+      <view class="form-field">
+        <text class="field-label">联系人</text>
+        <input class="field-input" placeholder="填写联系人/微信号" data-field="contact" value="{{verifyForm.contact}}" bindinput="onVerifyInput" />
+      </view>
+      <view class="form-field">
+        <text class="field-label">证明材料链接</text>
+        <input class="field-input" placeholder="可填写网盘/官网链接" data-field="credential" value="{{verifyForm.credential}}" bindinput="onVerifyInput" />
+      </view>
+      <button class="submit-btn" bindtap="submitVerifyApplication">提交审核</button>
+    </view>
+  </view>
+</view>
+
+<floating-ball />

@@ -1,0 +1,39 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/collects/collects",
+    "pages/share/share",
+    "pages/share/editor/editor",
+    "pages/share/mock-map/mock-map",
+    "pages/mall/mall",
+    "pages/alerts/alerts",
+    "pages/chat/chat",
+    "pages/user/user"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "MeetMeow",
+    "navigationBarBackgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#1296db",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index"
+      },
+      {
+        "pagePath": "pages/collects/collects"
+      },
+      {
+        "pagePath": "pages/share/share"
+      }
+    ]
+  },
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

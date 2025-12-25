@@ -1,0 +1,24 @@
+<view class="alerts-page">
+  <view class="hero">
+    <text class="hero-title">附近救助提示</text>
+    <text class="hero-sub">组织用户可收到附近小猫的关键信息</text>
+  </view>
+
+  <view class="alerts-list">
+    <view class="card" wx:for="{{alerts}}" wx:key="title">
+      <view class="card-head">
+        <view class="title-row">
+          <view class="alert-dot"></view>
+          <text class="alert-title">{{item.title}}</text>
+        </view>
+        <button class="ghost" data-title="{{item.title}}" bindtap="goMockMap">去这里</button>
+      </view>
+      <text class="alert-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <button class="primary" bindtap="ack">知道啦</button>
+  <view class="remind">
+    <text class="remind-text">AI自动检测用户上传的小猫，如有需要帮助的情况，将以消息提示的方式展示在此页面</text>
+  </view>
+</view>

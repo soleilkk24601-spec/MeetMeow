@@ -1,0 +1,16 @@
+<!-- 外层容器负责固定在底部并承载所有 tab 项 -->
+<view class="tab-bar">
+  <!-- 遍历 tabs 数据渲染图标与文案，selected 控制选中样式 -->
+  <view
+    wx:for="{{tabs}}"
+    wx:key="path"
+    class="tab-bar__item {{selected === index ? 'tab-bar__item--active' : ''}}"
+    data-path="{{item.path}}"
+    data-index="{{index}}"
+    bindtap="switchTab"
+  >
+    <!-- 根据选中态替换图标资源 -->
+    <image class="tab-bar__icon" src="{{selected === index ? item.activeIcon : item.icon}}" mode="aspectFit"></image>
+    <text class="tab-bar__label">{{item.text}}</text>
+  </view>
+</view>

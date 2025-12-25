@@ -1,0 +1,60 @@
+<view class="share-page">
+	<view class="feed-header">
+		<text class="feed-title">内容广场</text>
+		<text class="feed-subtitle">记录每一次与猫咪的邂逅</text>
+	</view>
+
+	<view class="empty-state" wx:if="{{!loading && posts.length === 0}}">
+		<text class="empty-icon">🐾</text>
+		<text class="empty-text">还没有喵友发布内容</text>
+		<text class="empty-hint">在结果卡片或图鉴中点击「分享」即可发布</text>
+	</view>
+
+	<block wx:for="{{posts}}" wx:key="{{item._id}}">
+		<view class="post-card">
+			<view class="post-header">
+				<image class="avatar" src="{{item.author_profile.avatar_url || 'https://img.yzcdn.cn/vant/cat-avatar.png'}}" mode="aspectFill"></image>
+				<view class="author-info">
+					<text class="author-name">{{item.author_profile.nickname || '匿名喵友'}}</text>
+					<text class="post-time">{{item.relativeTime || '刚刚'}}</text>
+				</view>
+				<text class="role-pill" wx:if="{{item.author_profile.role === 'ngo'}}">动保机构</text>
+				<text class="role-pill admin" wx:if="{{item.author_profile.role === 'admin'}}">管理员</text>
+			</view>
+
+			<view class="post-content">
+				<text class="content-text" wx:if="{{item.content}}">{{item.content}}</text>
+				<text class="content-text" wx:if="{{!item.content && item.share_story}}">{{item.share_story}}</text>
+			</view>
+
+			<image 
+				wx:if="{{item.media_url}}"
+				class="post-media"
+				mode="aspectFill"
+				src="{{item.media_url}}"
+			></image>
+
+			<view class="lbs-row" wx:if="{{(currentUserRole === 'ngo' || currentUserRole === 'admin') && item.displayLbs}}">
+				<text class="lbs-text">📍 {{item.displayLbs}}</text>
+				<button class="lbs-btn" wx:if="{{item.canViewPrecise}}" data-lat="{{item.preciseLat}}" data-lng="{{item.preciseLng}}" bindtap="openMockMap">查看定位</button>
+			</view>
+
+			<view class="post-actions">
+				<button class="like-btn" data-id="{{item._id}}" bindtap="toggleLike">
+					{{item.isLiked ? '已点赞' : '点赞'}} · {{item.likeCount || 0}}
+				</button>
+				<button class="delete-btn" wx:if="{{item.isMine}}" data-id="{{item._id}}" bindtap="deletePost">删除</button>
+			</view>
+		</view>
+	</block>
+
+	<view class="loading-row" wx:if="{{loading}}">
+		<text>喵星人正在搬运...</text>
+	</view>
+
+	<view class="end-row" wx:if="{{!loading && !hasMore && posts.length > 0}}">
+		<text>已经到底啦</text>
+	</view>
+</view>
+
+<floating-ball />

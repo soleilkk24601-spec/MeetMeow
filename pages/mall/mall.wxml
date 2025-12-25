@@ -1,0 +1,41 @@
+<view class="mall-page">
+  <view class="hero">
+    <text class="hero-title">喵星小铺（推荐）</text>
+    <text class="hero-sub">精选猫粮 · 猫砂 · 玩具，安心品质</text>
+  </view>
+  <view class="goods">
+    <view class="card">
+      <view class="row">
+        <text class="label">品名</text>
+        <text class="value">磨爪板</text>
+      </view>
+      <view class="row">
+        <text class="label">配送范围</text>
+        <text class="value">武汉主城区</text>
+      </view>
+      <button class="primary" bindtap="mockBuy">去看看</button>
+    </view>
+    <view class="card">
+      <view class="row">
+        <text class="label">品名</text>
+        <text class="value">冻干猫粮</text>
+      </view>
+      <view class="row">
+        <text class="label">配送范围</text>
+        <text class="value">全国</text>
+      </view>
+      <button class="primary" bindtap="mockBuy">去看看</button>
+    </view>
+    <view class="card">
+      <view class="row">
+        <text class="label">品名</text>
+        <text class="value"> 无尘猫砂 </text>
+      </view>
+      <view class="row">
+        <text class="label">配送范围</text>
+        <text class="value">武汉主城区</text>
+      </view>
+      <button class="primary" bindtap="mockBuy">去看看</button>
+    </view>
+  </view>
+</view>

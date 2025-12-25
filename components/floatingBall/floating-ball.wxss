@@ -1,0 +1,28 @@
+.floating-root {
+  position: fixed;
+  right: 32rpx;
+  top: 80%;
+  transform: translateY(-50%);
+  z-index: 999;
+}
+
+.ball {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 60rpx;
+  background: linear-gradient(135deg, #f7d86a, #f7b733);display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5b3600;
+  font-weight: 600;
+  font-size: 32rpx;
+}
+
+.ball-icon {
+  width: 72rpx;
+  height: 72rpx;
+}
+
+.ball-text {
+  letter-spacing: 2rpx;
+}

@@ -1,0 +1,6 @@
+<view wx:if="{{visible}}" class="floating-root">
+  <view class="ball" bindtap="handleTap" >
+    <image wx:if="{{icon}}" class="ball-icon" src="{{icon}}" mode="aspectFit" />
+    <text wx:else class="ball-text">AI</text>
+  </view>
+</view>

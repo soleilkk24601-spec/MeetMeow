@@ -1,0 +1,183 @@
+<view class="container" >
+
+  <!-- 用户信息顶栏：头像 + 昵称 + 会员等级 + 欢迎语 -->
+  <view class="top-bar">
+    <view class="user-section" bindtap="goToUserPage">
+      <image class="user-section__avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <view class="user-section__text">
+        <view class="user-section__name-row">
+          <text class="user-section__name">{{userInfo.nickName || '未登录用户'}}</text>
+          <text class="user-section__level">{{userInfo.vipLevel || 'VIP0'}}</text>
+        </view>
+        <text class="user-section__welcome">{{userInfo.welcomeMessage || '来到小咪星球第 1 天~'}}</text>
+      </view>
+    </view>
+    <view class="index-tool">
+      <view class="tool-item" bindtap="goMallPage">
+        <image class="tool-icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/home/home_icon_take_photo%403x.png" mode="aspectFit"></image>
+      </view>
+      <view class="tool-item" bindtap="goRescueNotice">
+        <image class="tool-icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/home/home_icon_take_photo%403x.png" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 猫咪标语：左右占位图 + 居中文案容器 -->
+  <view class="cat-slogan">
+    <image class="cat-slogan__image " src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/home/home_illus_cat_main.png" mode="aspectFit"></image>
+
+    <image class="cat-slogan-text" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/slogan.png" mode="aspectFit"></image>
+  </view>
+
+  <!-- 上传操作按钮：按钮内展示 icon，按钮下方展示文字 -->
+  <view class="btn-area">
+    <view class="btn-area__item" style="width: 354rpx; display: flex; box-sizing: border-box">
+      <button class="btn-primary" bindtap="takePhoto" disabled="{{isLoading || isUploading}}"  style="width: 300rpx; display: flex; box-sizing: border-box; left: 5rpx; top: 0rpx; position: relative">
+        <image class="btn-area__icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/home/home_icon_take_photo%403x.png" mode="aspectFit"></image>
+      </button>
+      <text class="btn-area__label">拍照上传</text>
+    </view>
+
+    <view class="btn-area__item">
+      <button class="btn-secondary" bindtap="chooseFromAlbum" disabled="{{isLoading || isUploading}}" style="width: 300rpx; display: flex; box-sizing: border-box; left: -5rpx; top: 0rpx; position: relative">
+        <image class="btn-area__icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/home/home_icon_album%403x.png" mode="aspectFit"></image>
+      </button>
+      <text class="btn-area__label">相册上传</text>
+    </view>
+  </view>
+
+  <!-- Loading 遮罩 -->
+  <view class="loading-mask" wx:if="{{isLoading}}">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">🐱 AI 正在分析猫咪...</text>
+    </view>
+  </view>
+
+  <!-- 结果卡片浮层 -->
+  <view class="result-overlay" wx:if="{{showResultCard}}" bindtap="closeResultCard">
+    <view class="result-card" catchtap="stopResultCardTap">
+
+      <!-- 关闭按钮 -->
+      <view class="close-btn" bindtap="closeResultCard">✕</view>
+
+      <view class="card-body">
+        <scroll-view scroll-y="true" class="card-scroll">
+          <!-- 品种和花色 -->
+          <view class="info-ribbon">
+            <view class="ribbon-item">
+              <text class="ribbon-breedvalue">{{(catResult.basic_info && catResult.basic_info.breed) || '—'}}</text>
+              <text class="ribbon-patternvalue">{{(catResult.basic_info && catResult.basic_info.color_pattern) || '—'}}</text>
+            </view>
+          </view>
+
+          <!-- 情绪title -->
+          <view class="emotion-strip">
+            <view class="emotion-tags">
+              <text class="emotion-pill mood-pill" wx:if="{{catResult.emotion_analysis && catResult.emotion_analysis.mood}}">{{catResult.emotion_analysis.mood}}</text>
+              <text class="emotion-pill intent-pill" wx:if="{{catResult.emotion_analysis && catResult.emotion_analysis.intent_tag}}">{{catResult.emotion_analysis.intent_tag}}</text>
+            </view>
+          </view>
+
+          <!-- 结构化分析辐射图 -->
+          <view class="analysis-ring">
+            <view class="ring-column">
+              <view class="ring-node">
+                <text class="node-label">绝育</text>
+                <text class="node-value">{{(catResult.health_analysis && catResult.health_analysis.neutered_status) || '—'}}</text>
+              </view>
+              <view class="ring-node">
+                <text class="node-label">眼部</text>
+                <text class="node-value">{{(catResult.health_analysis && catResult.health_analysis.eye_condition) || '—'}}</text>
+              </view>
+              <view class="ring-node">
+                <text class="node-label">体型</text>
+                <text class="node-value">{{(catResult.health_analysis && catResult.health_analysis.body_score) || '—'}}</text>
+              </view>
+            </view>
+
+            <view class="ring-center">
+              <view class="ring-photo">
+                <image src="{{catResult.image_url || uploadedImgUrl || currentImg}}" mode="aspectFill" class="ring-image"></image>
+              </view>
+              <view class="cat-name-field">
+                <text class="node-label">昵称：</text>
+                <input class="name-input {{catNameLocked ? 'name-input--locked' : ''}}" placeholder="{{catNameLocked ? '昵称已保存' : '输入猫咪昵称...'}}" placeholder-class="name-placeholder" value="{{catNameInput}}" bindinput="onCatNameInput" disabled="{{catNameLocked}}" />
+              </view>
+            </view>
+
+            <view class="ring-column">
+              <view class="ring-node">
+                <text class="node-label">四肢</text>
+                <text class="node-value">{{(catResult.health_analysis && catResult.health_analysis.limb_condition) || '—'}}</text>
+              </view>
+              <view class="ring-node">
+                <text class="node-label">毛发</text>
+                <text class="node-value">{{(catResult.health_analysis && catResult.health_analysis.coat_condition) || '—'}}</text>
+              </view>
+              <view class="ring-node">
+                <text class="node-label">特征</text>
+                <text class="node-value">{{(catResult.basic_info && catResult.basic_info.distinctive_features && catResult.basic_info.distinctive_features[0]) || '—'}}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="summary-section">
+            <view class="section-header">
+              <view class="section-title-box">
+                <text class="section-title">AI 报告总结</text>
+              </view>
+            </view>
+            <view class="section-content">
+              <text class="section-text">{{catResult.warm_stroy || catResult.warm_summary || 'AI 还在总结…'}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="card-footer">
+        <view class="interaction-reply" wx:if="{{interactionReply}}">
+          <text class="reply-label">AI 回复</text>
+          <text class="reply-text">{{interactionReply}}</text>
+        </view>
+
+        <view class="story-section story-section--footer">
+          <view class="section-header">
+            <view class="section-title-box">
+              <text class="section-title">初遇记录</text>
+            </view>
+            <text class="section-toggle" wx:if="{{currentStoryText}}" bindtap="handleStoryRegenerate">重新生成</text>
+          </view>
+          <block wx:if="{{currentStoryText}}">
+            <text class="story-text">{{currentStoryText}}</text>
+          </block>
+          <block wx:else>
+            <textarea class="story-input" placeholder="分享你与猫咪的互动" value="{{userPrompt}}" bindinput="onPromptInput" maxlength="200" auto-height="true"></textarea>
+            <view class="story-actions">
+              <button class="story-action-btn story-action-btn--ghost" bindtap="toggleVoiceInput" disabled="{{isSendingInteraction}}">{{isRecordingVoice ? '结束录音' : '语音输入'}}</button>
+              <button class="story-action-btn story-action-btn--primary {{canSendInteraction ? 'is-active' : ''}}" bindtap="handleUserInteraction" disabled="{{!canSendInteraction || isSendingInteraction}}">{{isSendingInteraction ? '发送中…' : '发送'}}</button>
+            </view>
+          </block>
+        </view>
+        <view class="card-actions">
+          <button class="detail-action-btn share-btn" bindtap="shareCat">
+            <view class="action-btn__inner">
+              <image class="action-btn__icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/report/report_btn_share.png" mode="aspectFit"></image>
+              <text class="action-btn__label">分享</text>
+            </view>
+          </button>
+          <button class="detail-action-btn catalog-btn" bindtap="addToCloudCatalog" disabled="{{hasSavedToCatalog}}">
+            <view class="action-btn__inner">
+              <image class="action-btn__icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/report/report_btn_generate_avatar.png" mode="aspectFit"></image>
+              <text class="action-btn__label">{{hasSavedToCatalog ? '已加入' : '保存到图鉴'}}</text>
+            </view>
+          </button>
+        </view>
+      </view>
+
+    </view>
+  </view>
+  
+</view>
+
+<floating-ball />

@@ -1,0 +1,39 @@
+.tab-bar {
+  /* 固定在底部的横向容器，撑满宽度并保持轻微透明背景 */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120rpx;
+  padding-bottom: 15rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #FFFAE4;
+  border:2rpx solid #adadad;
+  z-index: 999;
+}
+
+.tab-bar__item {
+  /* 单个 tab 项垂直排列图标与文字，并在 hover 时靠 selected 控制颜色 */
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  color: #563300;
+  font-size: 24rpx;
+}
+
+
+.tab-bar__icon {
+  /* 图标大小统一，使用 aspectFit 保持比例 */
+  width: 80rpx;
+  height: 80rpx;
+}
+
+.tab-bar__label {
+  line-height: 1;
+}

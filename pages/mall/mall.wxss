@@ -1,0 +1,64 @@
+.mall-page {
+  min-height: 100vh;
+  padding: 32rpx;
+  background: #FFFAE4;
+  box-sizing: border-box;
+}
+
+.hero {
+  margin-bottom: 24rpx;
+}
+
+.hero-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #563300;
+}
+
+.hero-sub {
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: #7a5633;
+}
+.goods{
+  display: flex;
+  flex-direction: column;
+  gap: 60rpx;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  box-shadow: 0 10rpx 24rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-size: 26rpx;
+  color: #563300;
+}
+
+.value {
+  font-size: 26rpx;
+  color: #563300;
+}
+
+.primary {
+  margin-top: 10rpx;
+  background: linear-gradient(135deg, #ffd042, #ffd042);
+  color: #563300;
+  border: none;
+  border-radius: 14rpx;
+  padding: 10rpx 0;
+  font-size: 28rpx;
+  font-weight: 600;
+}

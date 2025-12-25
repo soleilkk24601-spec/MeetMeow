@@ -1,0 +1,25 @@
+<view class="map-page">
+  <view class="map-card">
+    <view class="map-header">
+      <text class="title">武汉 · 模拟地点</text>
+      <text class="subtitle">仅示意展示，未启用真实定位</text>
+    </view>
+
+    <view class="map-viewport">
+      <view class="sky"></view>
+      <view class="ground"></view>
+      <view class="pin">
+        <view class="pin-head"></view>
+        <view class="pin-body"></view>
+      </view>
+      <view class="glow"></view>
+    </view>
+
+    <view class="info">
+      <text class="info-line">参考坐标：{{lat}}, {{lng}}</text>
+      <text class="info-line">提示：当前为前端示意地图，导航功能为展示体验</text>
+    </view>
+
+    <button class="nav-btn" bindtap="mockNavigate">导航到这里</button>
+  </view>
+</view>

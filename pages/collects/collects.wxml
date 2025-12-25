@@ -1,0 +1,226 @@
+<!-- pages/collects/collects.wxml -->
+<view class="collects-container">
+  
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <view class="title-area">
+      <image class = "head-cat" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/collects/gallery_illus_cat%403x.png" mode="aspectFit"> </image>
+      <text class="page-title">我的图鉴</text>
+    </view>
+    <text class="page-subtitle">共收藏 {{catList.length}} 只猫咪</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{isEmpty}}">
+    <view class="empty-icon-area">
+      <image class="empty-icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/collects/gallery_illus_camera%403x.png"  mode="widthFix"></image>
+      <text class="empty-text">还没有收藏猫咪</text>
+      <text class="empty-hint">去「遇喵」拍摄你的第一只猫咪吧！</text>
+    </view>
+
+  </view>
+
+  <!-- 猫咪列表 -->
+  <view class="collects-grid" wx:if="{{!isEmpty}}">
+    <block wx:for="{{catList}}" wx:key="{{item._id}}">
+      <view 
+        class="collect-card"
+        bindtap="viewDetail"
+        bindlongpress="handleCardLongPress"
+        data-id="{{item._id || item.id}}"
+      >
+        <view class="card-cover">
+          <image class="cover" src="{{item.image_url}}" mode="aspectFill"/>
+          <view 
+            class="card-delete-overlay"
+            wx:if="{{deleteCandidateId === (item._id || item.id)}}"
+            catchtap="handleDeleteIconTap"
+            data-id="{{item._id || item.id}}"
+          >
+            <text class="delete-icon">🗑</text>
+          </view>
+        </view>
+        <view class="card-footer">
+          <text class="card-title">{{item.catname || item.basic_info.breed || '未知猫咪'}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+  <view class="collect-footer">
+    <image class="more-cat-camera" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/collects/gallery_illus_camera%403x.png"  mode="widthFix"></image>
+    <text class="more-cat">更多小猫期待与你相遇哦~</text>
+  </view>
+  
+  <!-- 详情弹窗 -->
+  <view class="detail-overlay" wx:if="{{showDetailModal}}" bindtap="closeDetailModal">
+    <view class="detail-card" catchtap="stopModalTap">
+      <block wx:if="{{activeCat}}">
+        <view class="close-btn" bindtap="closeDetailModal">✕</view>
+        <view class="card-body">
+          <scroll-view scroll-y="true" class="card-scroll">
+            <view class="info-ribbon">
+              <view class="ribbon-item">
+                <text class="ribbon-breedvalue">{{activeCat.basic_info.breed || '—'}}</text>
+                <text class="ribbon-patternvalue">{{activeCat.basic_info.color_pattern || '—'}}</text>
+              </view>
+            </view>
+          <!-- 情绪title -->
+          <view class="emotion-strip">
+            <view class="emotion-tags">
+              <text class="emotion-pill mood-pill" wx:if="{{activeCat.emotion_analysis && activeCat.emotion_analysis.mood}}">{{activeCat.emotion_analysis.mood}}</text>
+              <text class="emotion-pill intent-pill" wx:if="{{activeCat.emotion_analysis && activeCat.emotion_analysis.intent_tag}}">{{activeCat.emotion_analysis.intent_tag}}</text>
+            </view>
+          </view>
+
+          <!-- 分析维度 -->
+            <view class="analysis-ring">
+              <view class="ring-column">
+                <view class="ring-node">
+                  <text class="node-label">绝育</text>
+                  <text class="node-value">{{(activeCat.health_analysis && activeCat.health_analysis.neutered_status) || '—'}}</text>
+                </view>
+                <view class="ring-node">
+                  <text class="node-label">眼部</text>
+                  <text class="node-value">{{(activeCat.health_analysis && activeCat.health_analysis.eye_condition) || '—'}}</text>
+                </view>
+                <view class="ring-node">
+                  <text class="node-label">体型</text>
+                  <text class="node-value">{{(activeCat.health_analysis && activeCat.health_analysis.body_score) || '—'}}</text>
+                </view>
+              </view>
+
+              <view class="ring-center">
+                <view class="ring-photo">
+                  <image 
+                    src="{{isShowingVirtualImage && activeCat.virtual_image ? activeCat.virtual_image : activeCat.image_url}}"
+                    mode="aspectFill"
+                    class="ring-image"
+                  ></image>
+                  <image
+                    wx:if="{{canToggleVirtualImage}}"
+                    class="ring-toggle-icon"
+                    src="{{isShowingVirtualImage ? 'https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/report/to_real.png' : 'https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/report/to_virtual.png'}}"
+                    mode="aspectFit"
+                    catchtap="toggleRingPhotoMode"
+                  ></image>
+                </view>
+                <view class="cat-name-field">
+                  <text class="node-label">昵称：</text>
+                  <text class="name-display">{{activeCat.catname || activeCat.basic_info.breed || '未命名猫咪'}}</text>
+                  <view class="rename-icon" bindtap="openRenameModal">✎</view>
+                </view>
+                <text class="meet-time">{{activeCat.meet_time ? (activeCat.meet_time.split('T')[0]) : ''}}</text>
+              </view>
+
+              <view class="ring-column">
+                <view class="ring-node">
+                  <text class="node-label">四肢</text>
+                  <text class="node-value">{{(activeCat.health_analysis && activeCat.health_analysis.limb_condition) || '—'}}</text>
+                </view>
+                <view class="ring-node">
+                  <text class="node-label">毛发</text>
+                  <text class="node-value">{{(activeCat.health_analysis && activeCat.health_analysis.coat_condition) || '—'}}</text>
+                </view>
+                <view class="ring-node">
+                  <text class="node-label">特征</text>
+                  <text class="node-value">{{(activeCat.basic_info && activeCat.basic_info.distinctive_features && activeCat.basic_info.distinctive_features[0]) || '—'}}</text>
+                </view>
+              </view>
+            </view>
+
+            <view class="summary-section" catchtap="toggleSummaryPanel">
+              <view class="section-header">
+                <view class="section-title-box">
+                  <text class="section-title">AI 报告总结</text>
+                </view>
+                <text class="section-toggle">{{isSummaryExpanded ? '收起' : '展开'}}</text>
+              </view>
+              <view class="section-content" wx:if="{{isSummaryExpanded}}">
+                <text class="section-text">{{activeCat.warm_stroy || activeCat.warm_summary || 'AI 还在总结…'}}</text>
+              </view>
+            </view>
+
+            <view class="story-section">
+              <view class="section-header">
+                <view class="section-title-box">
+                  <text class="section-title">初遇记录</text>
+                </view>
+                <text class="section-toggle" wx:if="{{currentStoryText}}" bindtap="handleStoryRegenerate">重新生成</text>
+              </view>
+              <block wx:if="{{currentStoryText}}">
+                <text class="story-text">{{currentStoryText}}</text>
+              </block>
+              <block wx:else>
+                <textarea 
+                  class="story-input"
+                  placeholder="快来记录你和它的初遇故事吧~"
+                  value="{{storyInput}}"
+                  bindinput="onStoryInput"
+                  maxlength="200"
+                  auto-height="true"
+                ></textarea>
+                <view class="story-actions">
+                  <button 
+                    class="story-action-btn story-action-btn--ghost"
+                    bindtap="toggleStoryVoice"
+                    disabled="{{isSendingStory}}"
+                  >{{isRecordingVoice ? '结束录音' : '语音输入'}}</button>
+                  <button 
+                    class="story-action-btn story-action-btn--primary {{canSendStory ? 'is-active' : ''}}"
+                    bindtap="handleSendStory"
+                    disabled="{{!canSendStory || isSendingStory}}"
+                  >{{isSendingStory ? '发送中...' : '发送'}}</button>
+                </view>
+              </block>
+            </view>
+
+            <view class="detail-actions detail-actions--dual">
+              <button class="detail-action-btn share-feed-btn" bindtap="shareActiveCat">
+                <view class="action-btn__inner">
+                  <image class="action-btn__icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/report/report_btn_share.png" mode="aspectFit"></image>
+                  <text class="action-btn__label">分享到广场</text>
+                </view>
+              </button>
+              <button 
+                class="detail-action-btn generate-avatar-btn"
+                bindtap="handleGenerateAvatar"
+                loading="{{isGeneratingNanoAvatar}}"
+                disabled="{{isGeneratingNanoAvatar}}"
+              >
+                <view class="action-btn__inner">
+                  <image class="action-btn__icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/report/report_btn_generate_avatar.png" mode="aspectFit"></image>
+                  <text class="action-btn__label">{{isGeneratingNanoAvatar ? '生成中...' : '生成虚拟形象'}}</text>
+                </view>
+              </button>
+            </view>
+          </scroll-view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="rename-overlay" wx:if="{{showRenameModal}}" bindtap="closeRenameModal">
+    <view class="rename-modal" catchtap="stopRenameTap">
+      <text class="rename-title">修改昵称</text>
+      <input 
+        class="rename-input"
+        placeholder="请输入新的猫咪昵称"
+        value="{{renameInput}}"
+        bindinput="onRenameInput"
+        maxlength="20"
+      />
+      <view class="rename-actions">
+        <button class="rename-cancel" bindtap="closeRenameModal" disabled="{{isRenamingCat}}">取消</button>
+        <button 
+          class="rename-submit"
+          bindtap="confirmRename"
+          loading="{{isRenamingCat}}"
+          disabled="{{isRenamingCat}}"
+        >保存</button>
+      </view>
+    </view>
+  </view>
+
+</view>
+
+<floating-ball />
