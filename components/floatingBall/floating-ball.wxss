@@ -13,14 +13,13 @@
   background: linear-gradient(135deg, #f7d86a, #f7b733);display: flex;
   align-items: center;
   justify-content: center;
-  color: #5b3600;
-  font-weight: 600;
-  font-size: 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
+
 }
 
 .ball-icon {
-  width: 72rpx;
-  height: 72rpx;
+  width: 96rpx;
+  height: 96rpx;
 }
 
 .ball-text {

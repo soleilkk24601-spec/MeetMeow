@@ -1,25 +1,43 @@
-<view class="map-page">
-  <view class="map-card">
-    <view class="map-header">
-      <text class="title">武汉 · 模拟地点</text>
-      <text class="subtitle">仅示意展示，未启用真实定位</text>
+<view class="mock-map-page">
+  <view class="card">
+    <view class="header">
+      <image class="paw-icon" src="{{assets.paw}}" mode="widthFix" />
+      <text class="header-title">{{title}}</text>
+    </view>
+    
+    <view class="map-block">
+      <map
+        class="map-image"
+        longitude="{{lng}}"
+        latitude="{{lat}}"
+        scale="16"
+        markers="{{markers}}"
+        show-location
+      >
+        <cover-image class="marker" src="{{assets.marker}}" mode="widthFix" />
+      </map>
     </view>
 
-    <view class="map-viewport">
-      <view class="sky"></view>
-      <view class="ground"></view>
-      <view class="pin">
-        <view class="pin-head"></view>
-        <view class="pin-body"></view>
+    <view class="address-row">
+      <image class="addr-icon" src="{{assets.location}}" mode="widthFix" />
+      <text class="address-text">{{address}}</text>
+    </view>
+
+    <view class="meta-row">
+      <view class="meta-item">
+        <text class="meta-label">距离</text>
+        <text class="meta-value">{{distance}}</text>
       </view>
-      <view class="glow"></view>
+      <view class="meta-divider"></view>
+      <view class="meta-item">
+        <image class="car-icon" src="{{assets.car}}" mode="widthFix" />
+        <text class="meta-value">{{duration}}</text>
+      </view>
     </view>
 
-    <view class="info">
-      <text class="info-line">参考坐标：{{lat}}, {{lng}}</text>
-      <text class="info-line">提示：当前为前端示意地图，导航功能为展示体验</text>
-    </view>
-
-    <button class="nav-btn" bindtap="mockNavigate">导航到这里</button>
+    <button class="nav-btn" bindtap="mockNavigate">
+      <image class="nav-icon" src="{{assets.nav}}" mode="widthFix" />
+      <text class="nav-text">导航到这里</text>
+    </button>
   </view>
 </view>

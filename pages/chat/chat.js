@@ -1,7 +1,10 @@
-require('../../utils/text-encoder-polyfill.js')
+const { TextEncoder, TextDecoder, encodeUTF8, decodeUTF8 } = require('../../utils/text-encoder-polyfill.js');
 const { sendChatMessageStream } = require('../../utils/chat.js')
 
 const STORAGE_KEY = 'QA_SESSION_HISTORY'
+const USER_PROFILE_STORAGE_KEY = 'user_profile'
+const DEFAULT_ASSISTANT_AVATAR = 'https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/agent.png'
+const DEFAULT_USER_AVATAR = 'https://img.yzcdn.cn/vant/user-active.png'
 
 Page({
   data: {
@@ -12,9 +15,10 @@ Page({
     conversationId: '',  // 当前会话 ID
     scrollIntoView: '',   // 用于滚动到指定消息
     canSend: false,
-    assistantAvatar: 'https://img.yzcdn.cn/vant/cat-avatar.png',
-    userAvatar: 'https://img.yzcdn.cn/vant/user-active.png',
-    isWaitingResponse: false
+    assistantAvatar: DEFAULT_ASSISTANT_AVATAR,
+    userAvatar: DEFAULT_USER_AVATAR,
+    isWaitingResponse: false,
+    keyboardHeight: 0
   },
 
   onLoad() {
@@ -25,6 +29,8 @@ Page({
     this.pendingTimeoutQuery = ''
     this.shouldIgnoreChunks = false
     this.hasReceivedFirstChunk = false
+    const sys = wx.getSystemInfoSync() || {}
+    this.windowHeight = sys.windowHeight || 0
 
     this.setData({
       messages,
@@ -32,6 +38,12 @@ Page({
     }, () => {
       this.scrollToBottom()
     })
+
+    this.refreshAvatars()
+  },
+
+  onShow() {
+    this.refreshAvatars()
   },
 
   handleHistoryTap() {
@@ -71,6 +83,18 @@ Page({
   // 输入框内容变化时更新数据
   handleInput(e) {
     this.setData({ inputValue: e.detail.value, canSend: !!e.detail.value.trim() })
+  },
+
+  handleInputFocus(e) {
+    const rawHeight = (e.detail && e.detail.height) || 0
+    const cap = this.windowHeight ? Math.floor(this.windowHeight * 0.55) : 420
+    const keyboardHeight = Math.min(Math.max(rawHeight, 0), cap)
+    this.setData({ keyboardHeight })
+    this.scrollToBottom('streaming')
+  },
+
+  handleInputBlur() {
+    this.setData({ keyboardHeight: 0 })
   },
 
   onUnload() {
@@ -118,6 +142,7 @@ Page({
     this.startNoResponseTimer(content)
     const conversationId = this.data.conversationId || ''
 
+  
     sendChatMessageStream({
       query: content,
       conversationId,
@@ -273,6 +298,13 @@ Page({
       conversationId: this.data.conversationId,
       messages
     })
+  },
+
+  refreshAvatars() {
+    const profile = wx.getStorageSync(USER_PROFILE_STORAGE_KEY) || {}
+    const userAvatar = profile.avatar_url || profile.avatarUrl || DEFAULT_USER_AVATAR
+    const assistantAvatar = DEFAULT_ASSISTANT_AVATAR
+    this.setData({ userAvatar, assistantAvatar })
   },
    
   //若文本是 JSON 串或对象，就解析后只取 answer 字段；否则保持原样。

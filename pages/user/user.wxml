@@ -10,7 +10,6 @@
         </view>
       </view>
     </view>
-    <button class="profile-btn" size="mini" bindtap="handleGetProfile">同步微信资料</button>
   </view>
 
   <view class="section">
@@ -35,7 +34,7 @@
     </view>
   </view>
 
-  <view class="section">
+  <!-- <view class="section">
     <view class="meta-line">
       <text class="meta-label">账号 ID</text>
       <text class="meta-value">{{userInfo._id || '待初始化'}}</text>
@@ -62,12 +61,12 @@
     </view>
     <button class="link-btn" bindtap="clearDebugOpenId" wx:if="{{debugOverrideOpenId}}">恢复真实 openid</button>
     <text class="debug-hint">提示：用于在微信开发者工具内测试不同 role/权限，可直接填写 users 表的 _id。</text>
-  </view>
+  </view> -->
 
   <view class="verify-overlay" wx:if="{{showVerifyModal}}" bindtap="closeVerifyModal">
     <view class="verify-modal" catchtap="stopModalTap">
       <view class="modal-header">
-        <text>动保组织认证</text>
+        <text class="modal-header-text">动保组织认证</text>
         <view class="modal-close" bindtap="closeVerifyModal">✕</view>
       </view>
       <view class="form-field">

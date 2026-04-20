@@ -1,15 +1,13 @@
 .user-page {
   min-height: 100vh;
-  background: #f6f6f6;
+  background: #FFFAE4;
   padding: 32rpx 24rpx 80rpx;
   box-sizing: border-box;
 }
 
 .profile-card {
-  background: #fff;
   border-radius: 32rpx;
   padding: 32rpx;
-  box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.06);
   margin-bottom: 32rpx;
 }
 
@@ -24,6 +22,7 @@
   height: 140rpx;
   border-radius: 50%;
   background: #eee;
+  border: 6rpx solid rgba(255, 217, 1, 0.9);
 }
 
 .profile-info {
@@ -33,7 +32,7 @@
 .nickname {
   font-size: 36rpx;
   font-weight: bold;
-  color: #333;
+  color: #563300
 }
 
 .tag-row {
@@ -48,7 +47,7 @@
   padding: 6rpx 14rpx;
   border-radius: 999rpx;
   background: #f4f4f4;
-  color: #555;
+  color: #563300;
 }
 
 .status-pending {
@@ -76,7 +75,8 @@
 }
 
 .section {
-  background: #fff;
+  background: linear-gradient(to top, rgba(255, 236, 183, 0.8) 0%, rgba(255, 236, 183, 0) 50%);
+  border:2rpx solid #563300;
   border-radius: 28rpx;
   padding: 24rpx;
   margin-bottom: 24rpx;
@@ -85,7 +85,7 @@
 .section-title {
   font-size: 28rpx;
   font-weight: bold;
-  color: #555;
+  color: #563300;
   margin-bottom: 16rpx;
 }
 
@@ -106,6 +106,7 @@
 }
 
 .item-desc {
+  padding-left: 10rpx;
   font-size: 24rpx;
   color: #888;
   margin-top: 8rpx;
@@ -113,7 +114,8 @@
 
 .chevron {
   font-size: 40rpx;
-  color: #ccc;
+  font-weight: 800;
+  color: #563300;
 }
 
 .meta-line {
@@ -200,6 +202,10 @@
   align-items: center;
   margin-bottom: 24rpx;
 }
+.modal-header-text{
+  color:#563300;
+  font-weight: 600;
+}
 
 .modal-close {
   width: 48rpx;
@@ -219,14 +225,15 @@
 
 .field-label {
   font-size: 26rpx;
-  color: #666;
+  color: #563300;
   margin-bottom: 8rpx;
   display: block;
 }
 
 .field-input {
   width: 100%;
-  padding: 18rpx 20rpx;
+  height: 60rpx;
+  padding: 0 20rpx;
   border-radius: 20rpx;
   border: 1px solid #e5e5e5;
   font-size: 28rpx;
@@ -236,7 +243,7 @@
 .submit-btn {
   width: 100%;
   background: linear-gradient(90deg, #ffb347, #ffcc33);
-  color: #333;
+  color: #563300;
   border-radius: 999rpx;
   border: none;
 }

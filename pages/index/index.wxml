@@ -1,5 +1,20 @@
 <view class="container" >
 
+  <!-- 首次登录头像昵称采集弹窗 -->
+  <view class="login-overlay" wx:if="{{showLoginModal}}" catchtouchmove="true">
+    <view class="login-modal" catchtap="stopModalTap">
+      <text class="login-title">完善资料后开始使用吧~</text>
+      <view class="login-avatar-row">
+        <button class="avatar-choose-btn" open-type="chooseAvatar" bindchooseavatar="handleChooseAvatar">
+          <image class="avatar-preview" src="{{loginAvatar || 'https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/images/1766907188086-5qdagl.jpg'}}" mode="aspectFill"></image>
+          <text class="avatar-choose-text">选择头像</text>
+        </button>
+      </view>
+      <input class="login-input" placeholder="请输入昵称" value="{{loginNickname}}" bindinput="onLoginNicknameInput" />
+      <button class="login-submit-btn" type="primary" loading="{{loginSubmitting}}" disabled="{{loginSubmitting || !loginAvatar || !loginNickname}}" bindtap="handleLoginSubmit">开始使用</button>
+    </view>
+  </view>
+
   <!-- 用户信息顶栏：头像 + 昵称 + 会员等级 + 欢迎语 -->
   <view class="top-bar">
     <view class="user-section" bindtap="goToUserPage">
@@ -14,10 +29,10 @@
     </view>
     <view class="index-tool">
       <view class="tool-item" bindtap="goMallPage">
-        <image class="tool-icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/home/home_icon_take_photo%403x.png" mode="aspectFit"></image>
+        <image class="tool-icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/home/tomall.png" mode="aspectFit"></image>
       </view>
       <view class="tool-item" bindtap="goRescueNotice">
-        <image class="tool-icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/home/home_icon_take_photo%403x.png" mode="aspectFit"></image>
+        <image class="tool-icon" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/home/protect.png" mode="aspectFit"></image>
       </view>
     </view>
   </view>
@@ -49,7 +64,7 @@
   <!-- Loading 遮罩 -->
   <view class="loading-mask" wx:if="{{isLoading}}">
     <view class="loading-content">
-      <view class="loading-spinner"></view>
+      <image class="loading-spinner-gif" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/home/loading.gif" mode="aspectFit"></image>
       <text class="loading-text">🐱 AI 正在分析猫咪...</text>
     </view>
   </view>
@@ -62,7 +77,7 @@
       <view class="close-btn" bindtap="closeResultCard">✕</view>
 
       <view class="card-body">
-        <scroll-view scroll-y="true" class="card-scroll">
+        <scroll-view scroll-y="true" show-scrollbar="true" class="card-scroll">
           <!-- 品种和花色 -->
           <view class="info-ribbon">
             <view class="ribbon-item">
@@ -136,10 +151,6 @@
       </view>
 
       <view class="card-footer">
-        <view class="interaction-reply" wx:if="{{interactionReply}}">
-          <text class="reply-label">AI 回复</text>
-          <text class="reply-text">{{interactionReply}}</text>
-        </view>
 
         <view class="story-section story-section--footer">
           <view class="section-header">

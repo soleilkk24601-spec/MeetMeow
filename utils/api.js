@@ -1,19 +1,21 @@
+const runtimeEnv = require('./env');
+
 // Dify 图片理解工作流配置
 const IMAGE_DIFY_API = {
-  url: 'https://api.dify.ai/v1/workflows/run', 
-  apiKey: 'app-T8Z4R2ziYRTLIys8ERWa3g0v'       
+  url: runtimeEnv.IMAGE_DIFY_API_URL,
+  apiKey: runtimeEnv.IMAGE_DIFY_API_KEY
 };
 
 // Dify 故事工作流配置
 const INTERACTION_DIFY_API = {
-  url: 'https://api.dify.ai/v1/workflows/run', 
-  apiKey: 'app-BaA1wsEhXSmI7FJ2SMCuxKbL'  
+  url: runtimeEnv.INTERACTION_DIFY_API_URL,
+  apiKey: runtimeEnv.INTERACTION_DIFY_API_KEY
 };
 
 // Nano Banana 编辑接口
 const QWEN_API = {
-  url: 'https://api.vectorengine.ai/v1/images/generations',
-  apiKey: 'sk-qYGm0hyBHzaP49IHJvQM2PoUkYTPnofK0iqRN0eUmtO0Jil2'
+  url: runtimeEnv.QWEN_API_URL,
+  apiKey: runtimeEnv.QWEN_API_KEY
 };
 
 
@@ -28,6 +30,9 @@ function callImageWorkflow(payload = {}) {
 
   if (!imageUrl) {
     return Promise.reject(new Error('缺少图片 URL'));
+  }
+  if (!IMAGE_DIFY_API.apiKey) {
+    return Promise.reject(new Error('缺少 IMAGE_DIFY_API_KEY'));
   }
 
   return new Promise((resolve, reject) => {
@@ -90,6 +95,9 @@ function callInteractionWorkflow(options = {}) {
 
   if (!hasAudio && !hasText) {
     return Promise.reject(new Error('请提供文本或语音内容'));
+  }
+  if (!INTERACTION_DIFY_API.apiKey) {
+    return Promise.reject(new Error('缺少 INTERACTION_DIFY_API_KEY'));
   }
 
   const sanitizedImage = typeof imageUrl === 'string' ? imageUrl.trim() : '';
@@ -195,6 +203,9 @@ function callQwenGeneration(options = {}) {
   if (!sanitizedImage) {
     return Promise.reject(new Error('缺少猫咪图片 URL'));
   }
+  if (!QWEN_API.apiKey) {
+    return Promise.reject(new Error('缺少 QWEN_API_KEY'));
+  }
 
   return new Promise((resolve, reject) => {
     wx.request({
@@ -206,7 +217,25 @@ function callQwenGeneration(options = {}) {
       },
       data: {
         model,
-        prompt: '治愈系卡通小猫风格：线条简洁流畅，造型圆润软萌，色彩柔和低饱和（马卡龙色系）。胡须用浅色几笔带过。眼睛是黑色实心椭圆形，带一点白色高光。还原小猫姿势。整体温馨治愈，还原真实小猫萌态与毛色、姿势等显著特征，风格统一于可爱系。白色背景。线条风格：采用0.5像素的黑色细轮廓线，均匀流畅。',
+        prompt: `
+      将上传的真实小猫照片，转换为简约清新的手绘插画风格
+      核心保留：
+      1. 严格还原原图中小猫的毛色、花纹细节
+      2. 严格还原原图中小猫的肢体动作与姿态
+      风格特征：
+      1. 线条简洁流畅（无复杂笔触）
+      2. 边缘柔和圆润
+      3. 配色沿用原图猫咪的真实色彩（仅做手绘质感的柔和化处理）
+      细节调整：
+      1. 将小猫的表情优化为自然放松的状态
+      2. 可微调为温和的神态
+      3. 画风干净无多余装饰
+      呈现效果：
+      1. 背景为纯素色（白色 / 浅灰）
+      2. 仅保留小猫主体
+      3. 添加极淡的投影增强轻盈感
+      4. 整体视觉简洁治愈、质感统一
+        `,
         image: sanitizedImage
       },
       success(res) {
@@ -231,7 +260,7 @@ function callQwenGeneration(options = {}) {
           data?.data?.[0]?.b64;
 
         if (!generatedUrl && generatedBase64) {
-          generatedUrl = `data:image/png;base64,${generatedBase64}`;
+          generatedUrl = `https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/images/1766907188086-5qdagl.jpg;base64,${generatedBase64}`;
         }
 
         if (!generatedUrl) {

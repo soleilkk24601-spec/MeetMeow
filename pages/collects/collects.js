@@ -8,7 +8,8 @@ const DEBUG_OPENID_STORAGE_KEY = 'debug_user_override_openid'
 
 // 后端服务地址配置
 const BACKEND_API = {
-  signPutUrl: 'http://39.96.197.118:3000/api/oss/sign-put' // 这是部署后的服务器地址
+  // 使用备案域名的 HTTPS 地址以满足小程序合法域名校验
+  signPutUrl: 'https://admin.rdzh8.com/api/oss/sign-put'
 }
 
 
@@ -51,7 +52,14 @@ Page({
    * 生命周期函数--监听页面显示（每次切换到该页面时刷新）
    */
   onShow: function () {
+    // 每次回到页面时重置详情弹窗状态
+    this.closeDetailModal();
     this.loadCatRecords()
+  },
+
+  onHide() {
+    // 离开页面时也确保关闭详情弹窗
+    this.closeDetailModal();
   },
 
   /**
@@ -70,7 +78,6 @@ Page({
       return
     }
 
-    wx.showLoading({ title: '加载图鉴...' })
     const db = wx.cloud.database()
     db.collection('cats_data')
       .where({ user_id: userId })
@@ -657,7 +664,8 @@ Page({
     }
 
     const breed = activeCat.basic_info && activeCat.basic_info.breed ? activeCat.basic_info.breed : ''
-    const locationDisplay = activeCat.meet_location_text || util.formatLocationTag(activeCat.meet_location)
+    // 留空交由分享编辑页做城市级逆地理解析，避免先渲染成“纬度/经度”
+    const locationDisplay = ''
     const payload = {
       scene: 'collects',
       imageUrl: activeCat.image_url,
@@ -908,6 +916,17 @@ Page({
     }
     wx.vibrateShort && wx.vibrateShort({ type: 'light' })
     this.setData({ isShowingVirtualImage: !this.data.isShowingVirtualImage })
+  },
+
+  previewRingImage(e) {
+    const url = e?.currentTarget?.dataset?.url || ''
+    if (!url) {
+      return
+    }
+    wx.previewImage({
+      current: url,
+      urls: [url]
+    })
   },
 
   normalizeImageExtension(mimeSubtype = '') {

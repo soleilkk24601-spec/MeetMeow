@@ -16,6 +16,10 @@
       maxlength="500"
       auto-height="true"
     ></textarea>
+    <view class="action-row">
+      <button class="action-button" size="mini" bindtap="fillStory">填充故事</button>
+      <button class="action-button" size="mini" type="warn" bindtap="clearContent">清除内容</button>
+    </view>
   </view>
 
   <view class="editor-block" wx:if="{{canToggleLocation}}">

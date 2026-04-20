@@ -68,6 +68,7 @@
 .message-row {
   display: flex;
   margin-bottom: 32rpx;
+  align-items: flex-start;
 }
 
 .message-row--user {
@@ -75,9 +76,10 @@
 }
 
 .message-row--user .bubble {
-  background: #ffe7a3;
+  background: #ffd7a8;
   border-bottom-right-radius: 8rpx;
   border-bottom-left-radius: 24rpx;
+  border: 2rpx solid #563300;
 }
 
 .message-row--assistant .bubble {
@@ -86,19 +88,28 @@
   border-bottom-right-radius: 24rpx;
 }
 
-.avatar {
+.avatar-user {
   width: 64rpx;
   height: 64rpx;
   border-radius: 50%;
   margin: 0 16rpx;
+  flex-shrink: 0;
+}
+
+.avatar-agent {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  margin: 0 0 0 16rpx;
+  flex-shrink: 0;
 }
 
 .bubble {
-  max-width: 520rpx;
+  max-width: calc(100% - 120rpx);
   padding: 20rpx 28rpx;
   border-radius: 28rpx;
   box-shadow: 0 8rpx 20rpx rgba(255, 174, 94, 0.25);
-  color: #5b3600;
+  color: #563300;
   font-size: 28rpx;
 }
 
@@ -148,33 +159,47 @@
   bottom: 32rpx;
   background: rgba(255, 255, 255, 0.94);
   border-radius: 28rpx;
-  padding: 20rpx;
+  padding: 20rpx 24rpx;
+  border:2rpx solid #563300;
   box-shadow: 0 14rpx 40rpx rgba(237, 181, 62, 0.25);
 }
 
+.input-main {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
 .input-area {
+  flex: 1;
   min-height: 140rpx;
-  max-height: 260rpx;
+  max-height: 252rpx;
   font-size: 28rpx;
   line-height: 1.5;
-  color: #5b3600;
-  width: 650rpx; 
-  display: block; 
-  box-sizing: border-box; 
-  left: 0rpx; 
-  top: 0rpx
+  color: #563300;
+  width: auto;
+  display: block;
+  box-sizing: border-box;
+  padding: 8rpx 0;
+  background: transparent;
 }
 
-.input-actions {
+.send-icon-btn {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 999rpx;
   display: flex;
-  justify-content: flex-end;
-  margin-top: 16rpx;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.send-btn {
-  background: linear-gradient(135deg, #f9b248, #f7841a);
-  color: #fff;
-  border-radius: 32rpx;
-  padding: 0 40rpx;
-  border: none;
+.send-icon-btn:active {
+  transform: translateY(2rpx);
+}
+
+.send-icon {
+  width: 72rpx;
+  height: 72rpx;
 }

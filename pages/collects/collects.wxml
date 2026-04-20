@@ -46,9 +46,9 @@
       </view>
     </block>
   </view>
-  <view class="collect-footer">
-    <image class="more-cat-camera" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/collects/gallery_illus_camera%403x.png"  mode="widthFix"></image>
-    <text class="more-cat">更多小猫期待与你相遇哦~</text>
+  <view class="collect-footer" wx:if="{{!isEmpty}}">
+      <image class="more-cat-camera" src="https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/collects/gallery_illus_camera%403x.png"  mode="widthFix"></image>
+      <text class="more-cat">更多小猫期待与你相遇哦~</text>
   </view>
   
   <!-- 详情弹窗 -->
@@ -95,6 +95,8 @@
                     src="{{isShowingVirtualImage && activeCat.virtual_image ? activeCat.virtual_image : activeCat.image_url}}"
                     mode="aspectFill"
                     class="ring-image"
+                    data-url="{{isShowingVirtualImage && activeCat.virtual_image ? activeCat.virtual_image : activeCat.image_url}}"
+                    bindtap="previewRingImage"
                   ></image>
                   <image
                     wx:if="{{canToggleVirtualImage}}"

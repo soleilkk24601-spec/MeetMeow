@@ -62,7 +62,7 @@ Page({
     const override = wx.getStorageSync(DEBUG_OPENID_STORAGE_KEY);
     const profile = wx.getStorageSync(USER_PROFILE_STORAGE_KEY) || {};
     const userId = override || profile._id || '';
-    const role = profile.role || 'user';
+    const role = (profile.role || 'user').toString().trim().toLowerCase();
     this.setData({ currentUserId: userId, currentUserRole: role });
   },
 
@@ -107,7 +107,7 @@ Page({
     const profile = wx.getStorageSync(USER_PROFILE_STORAGE_KEY) || {};
     const override = wx.getStorageSync(DEBUG_OPENID_STORAGE_KEY);
     const currentUserId = override || profile._id || '';
-    const role = profile.role || 'user';
+    const role = (profile.role || 'user').toString().trim().toLowerCase();
 
     const likedUserIds = (post.likes && post.likes.user_ids) || [];
     const isLiked = !!currentUserId && likedUserIds.includes(currentUserId);
@@ -214,7 +214,21 @@ Page({
     });
   },
 
+  previewImage(e) {
+    const { url } = e.currentTarget.dataset;
+    if (!url) {
+      return;
+    }
+    wx.previewImage({
+      current: url,
+      urls: [url]
+    });
+  },
+
   openMockMap(e) {
+    if (!['ngo', 'admin'].includes(this.data.currentUserRole)) {
+      return;
+    }
     const { lat, lng } = e.currentTarget.dataset;
     // 缺省时使用武汉市内的固定坐标
     const fallback = { lat: 30.5931, lng: 114.3054 };

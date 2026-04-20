@@ -5,10 +5,11 @@ const { callInteractionWorkflow, callImageWorkflow } = require('../../utils/api.
 const USER_PROFILE_STORAGE_KEY = 'user_profile';
 const DEBUG_OPENID_STORAGE_KEY = 'debug_user_override_openid';
 const USER_COLLECTION = 'users';
+const SHARE_DRAFT_STORAGE_KEY = 'share_draft_payload';
 
 // 后端服务地址配置
 const BACKEND_API = {
-  signPutUrl: 'http://39.96.197.118:3000/api/oss/sign-put' // 这是部署后的服务器地址
+  signPutUrl: 'https://admin.rdzh8.com/api/oss/sign-put'    // 这是部署后的服务器地址(+域名
 };
 
 Page({
@@ -21,7 +22,7 @@ Page({
     isLoading: false,       // AI分析中状态
     userInfo: {             // 用户信息
       avatar_url: '',
-      nickName: '用户',
+      nickName: '未登录喵友',
       _id: ''
     },
     showResultCard: false,  // 是否显示结果卡片浮层
@@ -41,7 +42,11 @@ Page({
     shareStory: '',           // 最新共创故事文本
     currentStoryText: '',     // 结果卡片底部展示的故事
     catNameLocked: false,     // 猫咪昵称是否已锁定
-    hasSavedToCatalog: false  // 是否已加入图鉴
+    hasSavedToCatalog: false, // 是否已加入图鉴
+    showLoginModal: false,    // 首次登录采集头像昵称弹窗
+    loginAvatar: '',          // 采集到的真实头像
+    loginNickname: '',        // 用户手填昵称
+    loginSubmitting: false    // 登录创建中
   },
 
   onShow() {
@@ -233,7 +238,15 @@ Page({
     }
 
     const userId = this.getCurrentUserId();
-    if (!userId || !wx.cloud) {
+    if (!wx.cloud) {
+      if (!userId) {
+        this.setData({ showLoginModal: true });
+      }
+      return;
+    }
+
+    if (!userId) {
+      this.setData({ showLoginModal: true });
       return;
     }
 
@@ -241,15 +254,18 @@ Page({
       .then(res => {
         if (res && res.data) {
           this.applyUserProfile(res.data);
+        } else {
+          this.setData({ showLoginModal: true });
         }
       })
       .catch(err => {
         console.warn('加载用户资料失败', err);
+        this.setData({ showLoginModal: true });
       });
   },
 
   applyUserProfile(profile = {}) {
-    const avatarUrl = profile.avatar_url || profile.avatarUrl || this.data.userInfo.avatarUrl || '/images/default-avatar.png';
+    const avatarUrl = profile.avatar_url || profile.avatarUrl || this.data.userInfo.avatarUrl || 'https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/images/1766907188086-5qdagl.jpg';
     const nickName = profile.nickname || profile.nickName || this.data.userInfo.nickName || '用户';
 
     this.setData({
@@ -258,7 +274,8 @@ Page({
         avatarUrl,
         nickName,
         _id: profile._id || this.data.userInfo._id || ''
-      }
+      },
+      showLoginModal: false
     });
 
     if (profile && profile._id) {
@@ -269,6 +286,94 @@ Page({
       };
       wx.setStorageSync(USER_PROFILE_STORAGE_KEY, cachedProfile);
     }
+  },
+
+  ensureOpenId() {
+    const override = wx.getStorageSync(DEBUG_OPENID_STORAGE_KEY);
+    if (override) {
+      return Promise.resolve(override);
+    }
+    const cached = wx.getStorageSync(USER_PROFILE_STORAGE_KEY);
+    if (cached && cached._id) {
+      return Promise.resolve(cached._id);
+    }
+    if (!wx.cloud) {
+      return Promise.reject(new Error('云开发不可用'));
+    }
+    return wx.cloud.callFunction({ name: 'login' }).then(res => {
+      const openId = res?.result?.openid || res?.result?.openId || res?.result?.userInfo?.openId || '';
+      if (!openId) {
+        throw new Error('未获取到 openid');
+      }
+      return openId;
+    });
+  },
+
+  //首次登录弹窗相关
+  handleChooseAvatar(e) {
+    const avatarUrl = e?.detail?.avatarUrl || '';
+    if (avatarUrl) {
+      this.setData({ loginAvatar: avatarUrl });
+    }
+  },
+
+  onLoginNicknameInput(e) {
+    this.setData({ loginNickname: e?.detail?.value || '' });
+  },
+
+
+  handleLoginSubmit() {
+    if (this.data.loginSubmitting) {
+      return;
+    }
+
+    const nickname = (this.data.loginNickname || '').trim();
+    const avatarUrl = (this.data.loginAvatar || '').trim();
+
+    if (!avatarUrl) {
+      wx.showToast({ title: '请选择头像', icon: 'none' });
+      return;
+    }
+    if (!nickname) {
+      wx.showToast({ title: '请输入昵称', icon: 'none' });
+      return;
+    }
+
+    this.setData({ loginSubmitting: true });
+    wx.showLoading({ title: '创建中...', mask: true });
+
+    this.ensureOpenId()
+      .then(openId => {
+        if (!wx.cloud) {
+          throw new Error('云开发不可用');
+        }
+        const db = wx.cloud.database();
+        const profile = {
+          _id: openId,
+          avatar_url: avatarUrl,
+          nickname,
+          role: 'user',
+          is_lbs_enabled: false,
+          verify_status: 'none',
+          created_at: new Date().toISOString()
+        };
+        const { _id, ...payload } = profile;
+        return db.collection(USER_COLLECTION).doc(openId).set({ data: payload })
+          .then(() => {
+            wx.setStorageSync(USER_PROFILE_STORAGE_KEY, profile);
+            this.applyUserProfile(profile);
+            this.setData({ showLoginModal: false });
+            wx.showToast({ title: '登录成功', icon: 'success' });
+          });
+      })
+      .catch(err => {
+        console.error('创建用户失败：', err);
+        wx.showToast({ title: err?.message || '创建失败', icon: 'none' });
+      })
+      .finally(() => {
+        wx.hideLoading();
+        this.setData({ loginSubmitting: false });
+      });
   },
   // 请求 OSS 上传签名
   requestOssSignature(filename, contentType = 'application/octet-stream') {
@@ -761,11 +866,11 @@ Page({
 
   // 构建内容广场草稿，并跳转至分享编辑页
   shareCatToPlaza() {
-    const catResult = this.data.catResult;
-    const remoteImage = this.data.uploadedImgUrl || (catResult && catResult.image_url);
-    if (!catResult || !remoteImage) {
-      wx.showToast({ title: '暂无可分享的猫咪卡片', icon: 'none' });
-      return;
+    const catResult = this.data.catResult || {};
+    const remoteImage = this.data.uploadedImgUrl || catResult.image_url || this.data.currentImg || '';
+
+    if (!remoteImage) {
+      wx.showToast({ title: '缺少分享图片，请先分析猫咪', icon: 'none' });
     }
 
     const storyText = (this.data.shareStory || this.data.interactionReply || catResult.warm_summary || '').trim();
@@ -810,6 +915,8 @@ Page({
   stopResultCardTap() {
     // 占位函数用于阻止事件冒泡关闭卡片
   },
+
+  stopModalTap() {},
 
   /**
    * 生命周期函数--监听页面加载

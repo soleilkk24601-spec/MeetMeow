@@ -9,7 +9,7 @@ Component({
     },
     icon: {
       type: String,
-      value: ''
+      value: 'https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/agent.png'
     }
   },
   data: {

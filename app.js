@@ -1,7 +1,6 @@
 // app.js
 // 引入 TextEncoder 和 TextDecoder 的 polyfill 以支持低版本基础库
 require('./utils/text-encoder-polyfill.js'); 
-
 App({
   onLaunch() {
     if (!wx.cloud) {

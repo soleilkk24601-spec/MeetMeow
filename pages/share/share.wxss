@@ -1,26 +1,10 @@
 .share-page {
 	min-height: 100vh;
 	padding: 32rpx;
-  background: #FFFAE4;
+  background: #FFD7A8;
 	box-sizing: border-box;
 }
 
-.feed-header {
-	margin-bottom: 24rpx;
-}
-
-.feed-title {
-	font-size: 40rpx;
-	font-weight: 700;
-	color: #222;
-}
-
-.feed-subtitle {
-	display: block;
-	margin-top: 8rpx;
-	font-size: 26rpx;
-	color: #888;
-}
 
 .empty-state {
 	margin-top: 200rpx;
@@ -45,7 +29,7 @@
 }
 
 .post-card {
-	background: #fff;
+	background: #FFFAE4;
 	border-radius: 28rpx;
 	padding: 24rpx;
 	margin-bottom: 24rpx;
@@ -73,27 +57,15 @@
 
 .author-name {
 	font-size: 30rpx;
-	color: #333;
+	color: #563300;
 	font-weight: 600;
 }
 
 .post-time {
 	font-size: 24rpx;
-	color: #999;
+	color: #563300
 }
 
-.role-pill {
-	padding: 6rpx 16rpx;
-	border-radius: 999rpx;
-	background: #e9f7ff;
-	color: #1296db;
-	font-size: 24rpx;
-}
-
-.role-pill.admin {
-	background: #ffecee;
-	color: #ff4d4f;
-}
 
 .post-content {
 	margin: 20rpx 0 12rpx;
@@ -101,8 +73,9 @@
 
 .content-text {
 	font-size: 28rpx;
-	color: #333;
-	line-height: 1.6;
+	color: #563300;
+  line-height: 1.6;
+  font-weight:400rpx;
 }
 
 .post-media {
@@ -110,16 +83,16 @@
 	border-radius: 20rpx;
 	height: 320rpx;
 	background: #f2f2f2;
-	object-fit: cover;
+  object-fit: cover;
+  border: 4rpx solid #563300;
 }
 
 .lbs-row {
-	margin-top: 18rpx;
 	display: flex;
-	align-items: center;
+	align-items:center;
 	justify-content: space-between;
 }
-
+  
 .lbs-text {
 	font-size: 26rpx;
 	color: #7a5c2f;
@@ -150,8 +123,8 @@
 }
 
 .like-btn {
-	background: #eef7ff;
-	color: #1296db;
+	background: #FFD042;
+	color: #563300;
 }
 
 .delete-btn {

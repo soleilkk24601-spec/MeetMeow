@@ -1,6 +1,7 @@
 const USER_COLLECTION = 'users';
 const USER_PROFILE_STORAGE_KEY = 'user_profile';
 const DEBUG_OPENID_STORAGE_KEY = 'debug_user_override_openid';
+const OPENID_STORAGE_KEY = 'user_openid_cache';
 
 // TODO: 将 login 云函数返回结果统一封装到 util 层，避免页面直接依赖函数名
 
@@ -32,7 +33,7 @@ Page({
       verified: '已认证',
       rejected: '需补充资料'
     },
-    defaultAvatar: 'https://img.yzcdn.cn/vant/cat-avatar.png',
+    defaultAvatar: 'https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/images/1766907188086-5qdagl.jpg',
     currentOpenId: '',
     debugOverrideOpenId: '',
     debugInputOpenId: ''
@@ -60,6 +61,7 @@ Page({
         if (cached && cached._id) {
           this.setData({ userInfo: cached });
         }
+        wx.showToast({ title: '未取到云端资料', icon: 'none' });
       })
       .finally(() => {
         wx.hideLoading();
@@ -74,8 +76,66 @@ Page({
       return Promise.resolve(override);
     }
 
-    wx.showToast({ title: '请在下方输入要调试的 openid', icon: 'none' });
-    return Promise.reject(new Error('未配置调试 openid，已跳过云端加载'));
+    const cached = wx.getStorageSync(OPENID_STORAGE_KEY);
+    if (cached) {
+      this.setData({ currentOpenId: cached });
+      return Promise.resolve(cached);
+    }
+
+    return this.loginAndFetchOpenId();
+  },
+
+  loginAndFetchOpenId() {
+    return new Promise((resolve, reject) => {
+      wx.login({
+        timeout: 8000,
+        success: (loginRes) => {
+          const code = loginRes.code;
+          if (!code) {
+            reject(new Error('未获取到登录 code'));
+            return;
+          }
+
+          this.callLoginFunction({ code })
+            .then(fnRes => {
+              const openId = this.extractOpenId(fnRes);
+              if (!openId) {
+                reject(new Error('login 云函数未返回 openid'));
+                return;
+              }
+              this.setData({ currentOpenId: openId });
+              wx.setStorageSync(OPENID_STORAGE_KEY, openId);
+              console.info('获取 openid 成功', openId);
+              resolve(openId);
+            })
+            .catch(err => {
+              wx.showToast({ title: '获取 openid 失败，请检查云函数 login', icon: 'none' });
+              console.error('callFunction login 失败', err);
+              reject(err);
+            });
+        },
+        fail: (err) => {
+          console.error('wx.login 失败', err);
+          reject(err);
+        }
+      });
+    });
+  },
+
+  callLoginFunction(payload = {}) {
+    // 兼容仅返回 openid 的 login 云函数，失败时退回无 code 调用
+    return wx.cloud.callFunction({ name: 'login', data: payload })
+      .catch(firstErr => {
+        console.warn('login 云函数携带 code 失败，尝试无参调用', firstErr);
+        return wx.cloud.callFunction({ name: 'login' })
+          .catch(secondErr => {
+            throw secondErr || firstErr;
+          });
+      });
+  },
+
+  extractOpenId(fnRes) {
+    return fnRes?.result?.openid || fnRes?.result?.openId || fnRes?.result?.userInfo?.openId || '';
   },
 
   fetchUserFromCloud(openId) {
@@ -83,21 +143,23 @@ Page({
     const db = wx.cloud.database();
     return db.collection(USER_COLLECTION).doc(openId).get()
       .then(res => {
+        this.setData({ currentOpenId: openId });
         this.persistUserInfo(res.data);
         return res.data;
       })
       .catch(err => {
-        if (err?.errMsg?.includes('document.get:fail')) {
-          return this.createUserRecord(openId);
-        }
-        throw err;
+        console.warn('获取云端用户失败', err);
+        this.persistUserInfo({ _id: openId });
+        wx.showToast({ title: '请返回首页完成登录', icon: 'none' });
+        return { _id: openId };
       });
   },
 
   createUserRecord(openId) {
-    // 云端不存在记录时创建默认档案
+    // 云端不存在记录时创建默认档案（头像/昵称由首页登录表单负责采集）
     const db = wx.cloud.database();
     const now = new Date().toISOString();
+
     const profile = {
       _id: openId,
       nickname: '未登录喵友',
@@ -108,8 +170,11 @@ Page({
       created_at: now
     };
 
-    return db.collection(USER_COLLECTION).doc(openId).set({ data: profile })
+    const { _id, ...payload } = profile;
+
+    return db.collection(USER_COLLECTION).doc(openId).set({ data: payload })
       .then(() => {
+        this.setData({ currentOpenId: openId });
         this.persistUserInfo(profile);
         return profile;
       });
@@ -150,29 +215,6 @@ Page({
       });
   },
 
-  handleGetProfile() {
-    // 调用微信授权接口同步头像昵称
-    if (!wx.getUserProfile) {
-      wx.showToast({ title: '当前基础库过低', icon: 'none' });
-      return;
-    }
-
-    wx.getUserProfile({
-      desc: '用于完善用户资料',
-      success: (res) => {
-        const { nickName, avatarUrl } = res.userInfo;
-        this.updateUserRecord({
-          nickname: nickName,
-          avatar_url: avatarUrl
-        }).then(() => {
-          wx.showToast({ title: '已同步资料', icon: 'success' });
-        });
-      },
-      fail: () => {
-        wx.showToast({ title: '未授权', icon: 'none' });
-      }
-    });
-  },
 
   toggleLbs(e) {
     // 控制 LBS 开关，按需申请定位权限

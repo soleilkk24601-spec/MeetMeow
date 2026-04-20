@@ -3,7 +3,12 @@
 .collects-container {
   height: 100vh;
   padding: 40rpx 24rpx 0rpx;
-  background: #FFFAE4;
+  box-sizing: border-box;
+  background-color: #FFFAE4;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-image: url(https://meetmeow.oss-cn-wuhan-lr.aliyuncs.com/source/home/home_bg_background.png);
 }
 
 .page-header {
